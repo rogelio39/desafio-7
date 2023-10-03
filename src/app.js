@@ -169,6 +169,27 @@ app.use('/api/carts', cartRouter);
 app.use('/api/sessions', sessionRouter);
 
 
+app.get('/static/login', async (req, res) => {
+
+    res.render('login', {
+        css: "login.css",
+        title: "login",
+        js: 'login.js'
+
+    })
+});
+
+app.get('/static/register', async (req, res) => {
+    
+    res.render('register', {
+        css: "register.css",
+        title: "register",
+        js: 'register.js'
+
+    })
+});
+
+
 app.get('/static/products', async(req, res) => {
 
     const name = req.session.name;
@@ -203,18 +224,6 @@ app.get('/static/products', async(req, res) => {
     }
 
 })
-
-
-app.get('/static', async (req, res) => {
-
-    res.render('login', {
-        css: "login.css",
-        title: "login",
-        js: 'login.js'
-
-    })
-});
-
 
 
 
