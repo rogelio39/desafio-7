@@ -1,8 +1,8 @@
 import local from 'passport-local'; //esto es la estrategia
 import passport from 'passport';
-import { createHash, validatePassword } from '../utils/bcrypt';
+import { createHash, validatePassword } from '../utils/bcrypt.js';
 
-import { userModel } from '../models/users.models';
+import { userModel } from '../models/users.models.js';
 
 
 //definimos la estrategia
@@ -13,7 +13,7 @@ const initializePassport = () => {
         { passReqToCallback: true, usernameField: ('email') },
         async (req, username, password, done) => {
             ///registro de usuario
-            const { first_name, last_name, email, age } = req.body;
+            const { first_name, last_name, email, age} = req.body;
             try {
                 const user = await userModel.findOne({ email: email });
 
@@ -40,13 +40,13 @@ const initializePassport = () => {
     ))
 
     passport.use('login', new LocalStrategy(
-        { usernameField: 'email'} , async(username, passport, done) =>{
+        { usernameField: 'email'} , async(username, password, done) =>{
             try{
-                const user = userModel.findOne({email: username})
+                const user = await userModel.findOne({email: username})
                 if(!user){
                     return done(null, false);
                 }
-
+                
                 if(validatePassword(password, user.password)){
                     return done(null, user);
                 }

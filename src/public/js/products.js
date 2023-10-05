@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.status === 200) {
-                window.location.href = '/static';
+                window.location.href = '/static/login';
             } else {
                 // Manejar otros códigos de estado si es necesario
                 console.log('Error en la respuesta del servidor:', response.status);

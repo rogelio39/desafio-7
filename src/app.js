@@ -4,8 +4,11 @@ import multer from "multer";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
 import cookieParser from 'cookie-parser';
+import passport from 'passport';
+import initializePassport from './config/passport.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
+
 
 
 import path from 'path';
@@ -83,6 +86,13 @@ app.use(session({
     saveUninitialized: false //Fuerzo a guardar la session a pesar de no tener ningun dato
 }))
 app.use(express.urlencoded({ extended: true }));
+
+//inicializamos la estrategia
+initializePassport();
+//para que funcione passport en toda la aplicacion
+app.use(passport.initialize());
+//inicializamos las sesiones. Hacemos que maneje lo que seria de las sesiones
+app.use(passport.session());
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -180,7 +190,7 @@ app.get('/static/login', async (req, res) => {
 });
 
 app.get('/static/register', async (req, res) => {
-    
+
     res.render('register', {
         css: "register.css",
         title: "register",
@@ -190,12 +200,10 @@ app.get('/static/register', async (req, res) => {
 });
 
 
-app.get('/static/products', async(req, res) => {
+app.get('/static/products', async (req, res) => {
 
-    const name = req.session.name;
-    const lastName = req.session.lastName;
 
-    try{
+    try {
         const products = await productModel.paginate({});
         const productsJSON = products.docs.map(producto => {
             return {
@@ -207,19 +215,19 @@ app.get('/static/products', async(req, res) => {
             };
         });
 
-        if(req.session.login){
+        if (req.session.user) {
             res.render('products', {
                 css: 'products.css',
                 js: 'products.js',
-                products : productsJSON,
-                name: name,
-                lastName : lastName
-            }) 
+                products: productsJSON,
+                name: req.session.user.first_name,
+                lastName: req.session.user.last_name
+            })
         } else {
-            res.render('accessDenied'); 
+            res.render('accessDenied');
         }
 
-    }catch(error) {
+    } catch (error) {
         console.log(error);
     }
 
