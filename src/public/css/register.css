@@ -24,7 +24,7 @@
     border-radius: 10px;
 }
 
-#email,#first_name, #password, #last_name{
+#email,#first_name, #password, #last_name, #age{
     width: 40vw;
     margin: auto;
 }
@@ -41,20 +41,6 @@
 #buttonLog:hover{
     background-color: #6d69d9;
 }
-
-#buttonRegister{
-    width: 20vw;
-    margin: auto;
-    padding: 0.4rem;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-#buttonRegister:hover{
-    background-color: #6d69d9;
-}
-
 
 #userContainer{
     border: 1.5px black solid;
