@@ -13,7 +13,7 @@ sessionRouter.post('/login', passport.authenticate('login'), async (req, res) =>
             last_name : req.user.last_name,
             age : req.user.age,
             email : req.user.email,
-        };        
+        };    
         return res.status(200).send({payload: req.user});
     }catch(error){
         res.status(500).send({message: `error al iniciar  sesion ${error}`});
@@ -32,6 +32,18 @@ sessionRouter.post('/register', passport.authenticate('register'), async (req, r
         res.status(500).send({message: `Error register ${error}`});
     }
 });
+
+
+
+sessionRouter.get('/github', passport.authenticate('github', {scope: ['user: email']} ), (req, res) => {
+    res.status(200).send({message: 'usuario registrado'});
+})
+
+
+sessionRouter.get('/githubCallback', passport.authenticate('github'), (req, res) => {
+    req.session.user = req.user;
+    res.status(200).send({message: 'usuario logueado'});
+})
 
 
 sessionRouter.get('/logout', async (req, res) => {

@@ -181,12 +181,14 @@ app.use('/api/sessions', sessionRouter);
 
 app.get('/static/login', async (req, res) => {
 
+    if(!req.session.user){    
     res.render('login', {
         css: "login.css",
         title: "login",
         js: 'login.js'
 
     })
+    } 
 });
 
 app.get('/static/register', async (req, res) => {

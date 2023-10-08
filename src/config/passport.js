@@ -1,6 +1,7 @@
 import local from 'passport-local'; //esto es la estrategia
 import passport from 'passport';
 import { createHash, validatePassword } from '../utils/bcrypt.js';
+import GithubStrategy from 'passport-github2';
 
 import { userModel } from '../models/users.models.js';
 
@@ -9,13 +10,13 @@ import { userModel } from '../models/users.models.js';
 
 const LocalStrategy = local.Strategy;
 const initializePassport = () => {
-    passport.use('register', new LocalStrategy(
+    passport.use('register', new LocalStrategy( 
         { passReqToCallback: true, usernameField: ('email') },
         async (req, username, password, done) => {
             ///registro de usuario
             const { first_name, last_name, email, age} = req.body;
             try {
-                const user = await userModel.findOne({ email: email });
+                const user = await userModel.findOne({ email: username });
 
                 //caso de error
                 if (user) {
@@ -46,7 +47,6 @@ const initializePassport = () => {
                 if(!user){
                     return done(null, false);
                 }
-                
                 if(validatePassword(password, user.password)){
                     return done(null, user);
                 }
@@ -56,6 +56,35 @@ const initializePassport = () => {
                 return done(error)
             }
     })) 
+
+    passport.use('github', new GithubStrategy({
+        clientID : process.env.CLIENT_ID,
+        clientSecret: process.env.SECRET_CLIENT,
+        callbackURL: process.env.CALLBACK_URL
+    }, async(accessToken, refreshToken, profile, done) => {
+        try{
+            // console.log(accessToken)
+            // console.log(refreshToken)
+            // console.log(profile._json)
+
+            const user = await userModel.findOne({email: profile._json.email})
+            if(user) {
+                done(null, false);
+            } else {
+                const userCreated = await userModel.create({
+                    first_name : profile._json.name,
+                    last_name: "",
+                    age: 18, //edad por defecto
+                    email: profile._json.email,
+                    password: createHash(profile._json.email + profile._json.name)
+                })
+                done(null, userCreated);
+            }
+
+        }catch(error){
+            done(error)
+        }
+    }))
 
     //inicializar la session de user
     passport.serializeUser((user, done) => {
