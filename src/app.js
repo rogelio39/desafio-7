@@ -220,7 +220,7 @@ app.get('/static/products', async (req, res) => {
         if (req.session.user) {
             res.render('products', {
                 css: 'products.css',
-                js: 'products.js',
+                js: 'logout.js',
                 products: productsJSON,
                 name: req.session.user.first_name,
                 lastName: req.session.user.last_name

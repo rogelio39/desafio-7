@@ -48,7 +48,7 @@ sessionRouter.get('/githubCallback', passport.authenticate('github'), (req, res)
 
 sessionRouter.get('/logout', async (req, res) => {
     try{
-        if(req.session.login){
+        if(req.session.user){
             req.session.destroy();
             res.redirect(200,'/static')
         }
