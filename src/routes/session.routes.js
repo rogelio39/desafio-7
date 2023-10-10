@@ -45,6 +45,12 @@ sessionRouter.get('/githubCallback', passport.authenticate('github'), (req, res)
     res.status(200).send({message: 'usuario logueado'});
 })
 
+sessionRouter.get('/current', passport.authenticate('jwt', { session : false}), (req,res) => {
+    console.log(req)
+    res.send(req.user);
+})
+
+
 
 sessionRouter.get('/logout', async (req, res) => {
     try{
